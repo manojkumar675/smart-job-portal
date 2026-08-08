@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:mysql}:${DB_PORT:3306}/${DB_NAME:job_portal}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME:jobportal}
+    password: ${DB_PASSWORD:changeme}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+app:
+  seed-data: ${SEED_DATA:false}
+
+logging:
+  level:
+    root: INFO
+    com.jobportal: INFO
+    org.hibernate.SQL: WARN

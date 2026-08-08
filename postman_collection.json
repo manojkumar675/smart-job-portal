@@ -1,0 +1,296 @@
+{
+  "info": {
+    "name": "Smart Job Portal API",
+    "description": "REST API collection for the Smart Job Portal backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "token", "value": "" },
+    { "key": "jobId", "value": "1" },
+    { "key": "applicationId", "value": "1" },
+    { "key": "userId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Candidate",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newcandidate@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"CANDIDATE\",\n  \"fullName\": \"New Candidate\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Recruiter",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newrecruiter@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"RECRUITER\",\n  \"companyName\": \"New Co\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"candidate1@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Search Jobs (filters + pagination)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/jobs?location=bangalore&skills=java,spring&experienceLevel=MID&jobType=FULL_TIME&keyword=backend&page=0&size=10&sort=createdAt,desc"
+          }
+        },
+        {
+          "name": "Get Job By Id",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/jobs/{{jobId}}"
+          }
+        },
+        {
+          "name": "Create Job (Recruiter)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/jobs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Backend Engineer\",\n  \"description\": \"Build APIs with Spring Boot\",\n  \"location\": \"Bangalore\",\n  \"jobType\": \"FULL_TIME\",\n  \"experienceLevel\": \"MID\",\n  \"minSalary\": 1200000,\n  \"maxSalary\": 2000000,\n  \"requiredSkills\": [\"Java\", \"Spring Boot\", \"MySQL\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Job (Recruiter)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/jobs/{{jobId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Backend Engineer\",\n  \"description\": \"Updated description\",\n  \"location\": \"Bangalore\",\n  \"jobType\": \"FULL_TIME\",\n  \"experienceLevel\": \"SENIOR\",\n  \"minSalary\": 1800000,\n  \"maxSalary\": 2600000,\n  \"requiredSkills\": [\"Java\", \"Spring Boot\", \"AWS\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Toggle Job Active (Recruiter)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/jobs/{{jobId}}/status?active=false"
+          }
+        },
+        {
+          "name": "Delete Job (Recruiter)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/jobs/{{jobId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Candidate",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/candidate/profile"
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/candidate/profile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Asha Rao\",\n  \"phone\": \"9876543210\",\n  \"experienceLevel\": \"MID\",\n  \"resumeUrl\": \"https://example.com/resume.pdf\",\n  \"bio\": \"Backend developer\",\n  \"skills\": [\"Java\", \"Spring Boot\", \"MySQL\", \"Docker\"]\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recruiter",
+      "item": [
+        {
+          "name": "Get My Recruiter Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/recruiter/profile"
+          }
+        },
+        {
+          "name": "Update My Recruiter Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/recruiter/profile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Acme Corp\",\n  \"companyWebsite\": \"https://acme.example.com\",\n  \"designation\": \"Technical Recruiter\"\n}"
+            }
+          }
+        },
+        {
+          "name": "My Posted Jobs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/recruiter/jobs?page=0&size=10"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "Apply To Job (Candidate)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/applications/apply/{{jobId}}"
+          }
+        },
+        {
+          "name": "My Applications (Candidate)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/applications/mine"
+          }
+        },
+        {
+          "name": "Applicants For Job (Recruiter)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/applications/job/{{jobId}}?page=0&size=10"
+          }
+        },
+        {
+          "name": "All Applicants (Recruiter)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/applications/recruiter/all?page=0&size=10"
+          }
+        },
+        {
+          "name": "Update Application Status (Recruiter)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/applications/{{applicationId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SHORTLISTED\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/admin/users?page=0&size=20"
+          }
+        },
+        {
+          "name": "Enable/Disable User",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/admin/users/{{userId}}/status?enabled=false"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/admin/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Delete Job",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/admin/jobs/{{jobId}}"
+          }
+        },
+        {
+          "name": "Set Job Active",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/admin/jobs/{{jobId}}/status?active=true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Skills",
+      "item": [
+        {
+          "name": "List All Skills",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/skills"
+          }
+        }
+      ]
+    }
+  ]
+}

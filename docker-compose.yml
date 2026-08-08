@@ -1,0 +1,58 @@
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: job-portal-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: job_portal
+      MYSQL_USER: jobportal
+      MYSQL_PASSWORD: jobportal_pass
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: job-portal-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: job_portal
+      DB_USERNAME: jobportal
+      DB_PASSWORD: jobportal_pass
+      JWT_SECRET: a-long-random-production-secret-please-change-me
+      JWT_EXPIRATION_MS: 86400000
+      SEED_DATA: "true"
+      SERVER_PORT: 8080
+    ports:
+      - "8083:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: job-portal-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  mysql_data:

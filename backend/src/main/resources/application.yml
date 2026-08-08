@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: smart-job-portal
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-this-super-secret-key-in-prod-please-0123456789}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
